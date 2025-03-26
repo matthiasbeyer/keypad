@@ -76,4 +76,24 @@ pub struct KeypadConfig {
 pub struct PadConfig {
     pub released: [u8; 3],
     pub pressed: [u8; 3],
+    pub on_press: Vec<OnPressAction>,
+    pub on_release: Vec<OnReleaseAction>,
+}
+
+#[derive(Clone, Debug, serde::Deserialize)]
+pub enum OnPressAction {
+    ToggleBlinking,
+
+    Publish {
+        topic: String,
+        payload: String,
+    }
+}
+
+#[derive(Clone, Debug, serde::Deserialize)]
+pub enum OnReleaseAction {
+    Publish {
+        topic: String,
+        payload: String,
+    }
 }

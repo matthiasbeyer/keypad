@@ -1,3 +1,5 @@
+use cloudmqtt::CloudmqttClient;
+
 use crate::config::PadConfig;
 
 #[derive(Clone, Debug)]
@@ -64,7 +66,7 @@ impl KeypadState {
     }
 
     pub async fn publish(
-        &self,
+        &mut self,
         client: &cloudmqtt::CloudmqttClient,
         config: &crate::config::Config,
     ) {
@@ -73,10 +75,9 @@ impl KeypadState {
 
         bytes_pressed.extend(
             self.rows
-                .iter()
-                .cloned()
-                .flat_map(|r| r.0.into_iter())
-                .flat_map(|key_state| key_state.color_pressed.as_slice().into_iter()),
+                .iter_mut()
+                .flat_map(|r| r.0.iter_mut())
+                .flat_map(|key_state| key_state.color_pressed().as_slice().into_iter()),
         );
 
         let mut bytes_released: Vec<u8> = Vec::with_capacity((3 * 25) + 3);
@@ -84,10 +85,9 @@ impl KeypadState {
 
         bytes_released.extend(
             self.rows
-                .iter()
-                .cloned()
-                .flat_map(|r| r.0.into_iter())
-                .flat_map(|key_state| key_state.color_released.as_slice().into_iter()),
+                .iter_mut()
+                .flat_map(|r| r.0.iter_mut())
+                .flat_map(|key_state| key_state.color_released().as_slice().into_iter()),
         );
 
         let pressed_pub = client.publish(
@@ -111,26 +111,26 @@ impl KeypadState {
         tokio::join!(pressed_pub, released_pub);
     }
 
-    pub fn pressed(&mut self, index: u8) {
+    pub async fn pressed(&mut self, index: u8, mqtt: &CloudmqttClient) {
         tracing::debug!(?index, "Pressed");
         match index {
-            0..=4 => self.rows[0].pressed(index % 5),
-            5..=9 => self.rows[1].pressed(index % 5),
-            10..=14 => self.rows[2].pressed(index % 5),
-            15..=19 => self.rows[3].pressed(index % 5),
-            20..=24 => self.rows[4].pressed(index % 5),
+            0..=4 => self.rows[0].pressed(index % 5, mqtt).await,
+            5..=9 => self.rows[1].pressed(index % 5, mqtt).await,
+            10..=14 => self.rows[2].pressed(index % 5, mqtt).await,
+            15..=19 => self.rows[3].pressed(index % 5, mqtt).await,
+            20..=24 => self.rows[4].pressed(index % 5, mqtt).await,
             other => tracing::warn!(index = other, "Out of index"),
         }
     }
 
-    pub fn released(&mut self, index: u8) {
+    pub async fn released(&mut self, index: u8, mqtt: &CloudmqttClient) {
         tracing::debug!(?index, "Released");
         match index {
-            0..=4 => self.rows[0].released(index % 5),
-            5..=9 => self.rows[1].released(index % 5),
-            10..=14 => self.rows[2].released(index % 5),
-            15..=19 => self.rows[3].released(index % 5),
-            20..=24 => self.rows[4].released(index % 5),
+            0..=4 => self.rows[0].released(index % 5, mqtt).await,
+            5..=9 => self.rows[1].released(index % 5, mqtt).await,
+            15..=19 => self.rows[3].released(index % 5, mqtt).await,
+            10..=14 => self.rows[2].released(index % 5, mqtt).await,
+            20..=24 => self.rows[4].released(index % 5, mqtt).await,
             other => tracing::warn!(index = other, "Out of index"),
         }
     }
@@ -140,17 +140,17 @@ impl KeypadState {
 struct Row(Vec<KeyState>);
 
 impl Row {
-    pub fn pressed(&mut self, index: u8) {
+    pub async fn pressed(&mut self, index: u8, mqtt: &CloudmqttClient) {
         if index < 5 {
-            self.0[index as usize].pressed()
+            self.0[index as usize].pressed(mqtt).await
         } else {
             tracing::warn!(?index, "Row index out of range");
         }
     }
 
-    pub fn released(&mut self, index: u8) {
+    pub async fn released(&mut self, index: u8, mqtt: &CloudmqttClient) {
         if index < 5 {
-            self.0[index as usize].released()
+            self.0[index as usize].released(mqtt).await
         } else {
             tracing::warn!(?index, "Row index out of range");
         }
@@ -158,10 +158,15 @@ impl Row {
 }
 
 #[derive(Clone, Debug)]
-struct KeyState {
+pub(crate) struct KeyState {
     color_pressed: crate::util::Rgb,
     color_released: crate::util::Rgb,
     pressed: bool,
+    blinking: bool,
+    blink_state: BlinkState,
+
+    on_press: Vec<crate::action::Action>,
+    on_release: Vec<crate::action::Action>,
 }
 
 impl From<&PadConfig> for KeyState {
@@ -178,16 +183,81 @@ impl From<&PadConfig> for KeyState {
                 config.released[2],
             ]),
             pressed: false,
+            blinking: false,
+            blink_state: BlinkState::Off,
+
+            on_press: config
+                .on_press
+                .iter()
+                .map(crate::action::Action::from)
+                .collect::<Vec<_>>(),
+
+            on_release: config
+                .on_release
+                .iter()
+                .map(crate::action::Action::from)
+                .collect::<Vec<_>>(),
         }
     }
 }
 
 impl KeyState {
-    fn pressed(&mut self) {
+    async fn pressed(&mut self, mqtt: &CloudmqttClient) {
         self.pressed = true;
+
+        for action in self.on_press.clone().iter() {
+            if let Err(error) = action.execute(self, mqtt).await {
+                tracing::error!(?error, ?action, "Executing action yielded error");
+            }
+        }
     }
 
-    fn released(&mut self) {
+    async fn released(&mut self, mqtt: &CloudmqttClient) {
         self.pressed = false;
+
+        for action in self.on_release.clone().iter() {
+            if let Err(error) = action.execute(self, mqtt).await {
+                tracing::error!(?error, ?action, "Executing action yielded error");
+            }
+        }
     }
+
+    pub(crate) fn toggle_blinking(&mut self) {
+        self.blinking = !self.blinking;
+    }
+
+    fn color_pressed(&mut self) -> crate::util::Rgb {
+        if self.blinking {
+            self.color_blinking()
+        } else {
+            self.color_pressed
+        }
+    }
+
+    fn color_released(&mut self) -> crate::util::Rgb {
+        if self.blinking {
+            self.color_blinking()
+        } else {
+            self.color_released
+        }
+    }
+
+    fn color_blinking(&mut self) -> crate::util::Rgb {
+        match self.blink_state {
+            BlinkState::On => {
+                self.blink_state = BlinkState::Off;
+                self.color_pressed
+            }
+            BlinkState::Off => {
+                self.blink_state = BlinkState::On;
+                self.color_released
+            }
+        }
+    }
+}
+
+#[derive(Clone, Copy, Debug)]
+enum BlinkState {
+    On,
+    Off,
 }

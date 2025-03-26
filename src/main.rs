@@ -8,6 +8,7 @@ use mqtt_format::v5::packets::publish::MPublish;
 use tracing_subscriber::Layer;
 use tracing_subscriber::layer::SubscriberExt;
 
+mod action;
 mod cli;
 mod config;
 mod keypad;
@@ -71,9 +72,9 @@ async fn main() -> miette::Result<()> {
         };
 
         if num.is_sign_negative() {
-            key_pad_state.released(num.abs() as u8);
+            key_pad_state.released(num.abs() as u8, &mqtt).await;
         } else {
-            key_pad_state.pressed(num.abs() as u8);
+            key_pad_state.pressed(num.abs() as u8, &mqtt).await;
         }
     }
 
