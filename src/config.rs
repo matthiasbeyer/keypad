@@ -7,8 +7,7 @@ pub struct Config {
     // pub mqtt_client_id: String, // TODO Unused because cloudmqtt does not yet have the interface
     pub mqtt_subscribe_prefix: String,
 
-    pub initial_state_released: InitialState,
-    pub initial_state_pressed: InitialState,
+    pub keypad: KeypadConfig,
 }
 
 impl Config {
@@ -45,19 +44,36 @@ pub enum ConfigError {
 }
 
 #[derive(Debug, serde::Deserialize)]
-pub struct InitialState {
-    pub row_0: [LedState; 5],
-    pub row_1: [LedState; 5],
-    pub row_2: [LedState; 5],
-    pub row_3: [LedState; 5],
-    pub row_4: [LedState; 5],
+pub struct KeypadConfig {
+    pub pad_0_0: PadConfig,
+    pub pad_0_1: PadConfig,
+    pub pad_0_2: PadConfig,
+    pub pad_0_3: PadConfig,
+    pub pad_0_4: PadConfig,
+    pub pad_1_0: PadConfig,
+    pub pad_1_1: PadConfig,
+    pub pad_1_2: PadConfig,
+    pub pad_1_3: PadConfig,
+    pub pad_1_4: PadConfig,
+    pub pad_2_0: PadConfig,
+    pub pad_2_1: PadConfig,
+    pub pad_2_2: PadConfig,
+    pub pad_2_3: PadConfig,
+    pub pad_2_4: PadConfig,
+    pub pad_3_0: PadConfig,
+    pub pad_3_1: PadConfig,
+    pub pad_3_2: PadConfig,
+    pub pad_3_3: PadConfig,
+    pub pad_3_4: PadConfig,
+    pub pad_4_0: PadConfig,
+    pub pad_4_1: PadConfig,
+    pub pad_4_2: PadConfig,
+    pub pad_4_3: PadConfig,
+    pub pad_4_4: PadConfig,
 }
 
 #[derive(Debug, serde::Deserialize)]
-pub struct LedState(pub [u8; 3]);
-
-impl LedState {
-    pub fn unpack(&self) -> [u8; 3] {
-        self.0
-    }
+pub struct PadConfig {
+    pub released: [u8; 3],
+    pub pressed: [u8; 3],
 }
