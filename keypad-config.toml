@@ -3,84 +3,107 @@ mqtt_broker_port = 1883
 mqtt_client_id = "keypad-util"
 mqtt_subscribe_prefix = "mx-blue"
 
-[initial_state_released]
-row_0 = [
-    [0, 50, 0],
-    [0, 50, 0],
-    [0, 50, 0],
-    [0, 50, 0],
-    [0, 50, 0],
-]
+[keypad.pad_0_0]
+released = [0, 50, 0]
+pressed = [50, 0, 0]
 
-row_1 = [
-    [0, 50, 0],
-    [0, 50, 0],
-    [0, 50, 0],
-    [0, 50, 0],
-    [0, 50, 0],
-]
+[keypad.pad_0_1]
+released = [0, 50, 0]
+pressed = [50, 0, 0]
 
-row_2 = [
-    [0, 50, 0],
-    [0, 50, 0],
-    [0, 50, 0],
-    [0, 50, 0],
-    [0, 50, 0],
-]
+[keypad.pad_0_2]
+released = [0, 50, 0]
+pressed = [50, 0, 0]
 
-row_3 = [
-    [0, 50, 0],
-    [0, 50, 0],
-    [0, 50, 0],
-    [0, 50, 0],
-    [0, 50, 0],
-]
+[keypad.pad_0_3]
+released = [0, 50, 0]
+pressed = [50, 0, 0]
 
-row_4 = [
-    [0, 50, 0],
-    [0, 50, 0],
-    [0, 50, 0],
-    [0, 50, 0],
-    [0, 50, 0],
-]
+[keypad.pad_0_4]
+released = [0, 50, 0]
+pressed = [50, 0, 0]
 
-[initial_state_pressed]
-row_0 = [
-    [50, 0, 0],
-    [50, 0, 0],
-    [50, 0, 0],
-    [50, 0, 0],
-    [50, 0, 0],
-]
 
-row_1 = [
-    [50, 0, 0],
-    [50, 0, 0],
-    [50, 0, 0],
-    [50, 0, 0],
-    [50, 0, 0],
-]
+[keypad.pad_1_0]
+released = [0, 50, 0]
+pressed = [50, 0, 0]
 
-row_2 = [
-    [50, 0, 0],
-    [50, 0, 0],
-    [50, 0, 0],
-    [50, 0, 0],
-    [50, 0, 0],
-]
+[keypad.pad_1_1]
+released = [0, 50, 0]
+pressed = [50, 0, 0]
 
-row_3 = [
-    [50, 0, 0],
-    [50, 0, 0],
-    [50, 0, 0],
-    [50, 0, 0],
-    [50, 0, 0],
-]
+[keypad.pad_1_2]
+released = [0, 50, 0]
+pressed = [50, 0, 0]
 
-row_4 = [
-    [50, 0, 0],
-    [50, 0, 0],
-    [50, 0, 0],
-    [50, 0, 0],
-    [50, 0, 0],
-]
+[keypad.pad_1_3]
+released = [0, 50, 0]
+pressed = [50, 0, 0]
+
+[keypad.pad_1_4]
+released = [0, 50, 0]
+pressed = [50, 0, 0]
+
+
+[keypad.pad_2_0]
+released = [0, 50, 0]
+pressed = [50, 0, 0]
+
+[keypad.pad_2_1]
+released = [0, 50, 0]
+pressed = [50, 0, 0]
+
+[keypad.pad_2_2]
+released = [0, 50, 0]
+pressed = [50, 0, 0]
+
+[keypad.pad_2_3]
+released = [0, 50, 0]
+pressed = [50, 0, 0]
+
+[keypad.pad_2_4]
+released = [0, 50, 0]
+pressed = [50, 0, 0]
+
+
+[keypad.pad_3_0]
+released = [0, 50, 0]
+pressed = [50, 0, 0]
+
+[keypad.pad_3_1]
+released = [0, 50, 0]
+pressed = [50, 0, 0]
+
+[keypad.pad_3_2]
+released = [0, 50, 0]
+pressed = [50, 0, 0]
+
+[keypad.pad_3_3]
+released = [0, 50, 0]
+pressed = [50, 0, 0]
+
+[keypad.pad_3_4]
+released = [0, 50, 0]
+pressed = [50, 0, 0]
+
+
+[keypad.pad_4_0]
+released = [0, 50, 0]
+pressed = [50, 0, 0]
+
+[keypad.pad_4_1]
+released = [0, 50, 0]
+pressed = [50, 0, 0]
+
+[keypad.pad_4_2]
+released = [0, 50, 0]
+pressed = [50, 0, 0]
+
+[keypad.pad_4_3]
+released = [0, 50, 0]
+pressed = [50, 0, 0]
+
+[keypad.pad_4_4]
+released = [0, 50, 0]
+pressed = [50, 0, 0]
+

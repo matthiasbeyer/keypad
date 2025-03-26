@@ -1,3 +1,5 @@
+use crate::config::PadConfig;
+
 #[derive(Clone, Debug)]
 pub struct KeypadState {
     rows: [Row; 5],
@@ -7,41 +9,56 @@ impl KeypadState {
     pub fn from_config(config: &crate::config::Config) -> Self {
         Self {
             rows: [
-                Row(config
-                    .initial_state_released
-                    .row_0
-                    .iter()
-                    .zip(config.initial_state_pressed.row_0.iter())
-                    .map(|(rel, pre)| KeyState::new(rel.unpack(), pre.unpack()))
-                    .collect()),
-                Row(config
-                    .initial_state_released
-                    .row_1
-                    .iter()
-                    .zip(config.initial_state_pressed.row_1.iter())
-                    .map(|(rel, pre)| KeyState::new(rel.unpack(), pre.unpack()))
-                    .collect()),
-                Row(config
-                    .initial_state_released
-                    .row_2
-                    .iter()
-                    .zip(config.initial_state_pressed.row_2.iter())
-                    .map(|(rel, pre)| KeyState::new(rel.unpack(), pre.unpack()))
-                    .collect()),
-                Row(config
-                    .initial_state_released
-                    .row_3
-                    .iter()
-                    .zip(config.initial_state_pressed.row_3.iter())
-                    .map(|(rel, pre)| KeyState::new(rel.unpack(), pre.unpack()))
-                    .collect()),
-                Row(config
-                    .initial_state_released
-                    .row_4
-                    .iter()
-                    .zip(config.initial_state_pressed.row_4.iter())
-                    .map(|(rel, pre)| KeyState::new(rel.unpack(), pre.unpack()))
-                    .collect()),
+                Row([
+                    &config.keypad.pad_0_0,
+                    &config.keypad.pad_0_1,
+                    &config.keypad.pad_0_2,
+                    &config.keypad.pad_0_3,
+                    &config.keypad.pad_0_4,
+                ]
+                .into_iter()
+                .map(|pad: &PadConfig| KeyState::from(pad))
+                .collect()),
+                Row([
+                    &config.keypad.pad_1_0,
+                    &config.keypad.pad_1_1,
+                    &config.keypad.pad_1_2,
+                    &config.keypad.pad_1_3,
+                    &config.keypad.pad_1_4,
+                ]
+                .into_iter()
+                .map(|pad: &PadConfig| KeyState::from(pad))
+                .collect()),
+                Row([
+                    &config.keypad.pad_2_0,
+                    &config.keypad.pad_2_1,
+                    &config.keypad.pad_2_2,
+                    &config.keypad.pad_2_3,
+                    &config.keypad.pad_2_4,
+                ]
+                .into_iter()
+                .map(|pad: &PadConfig| KeyState::from(pad))
+                .collect()),
+                Row([
+                    &config.keypad.pad_3_0,
+                    &config.keypad.pad_3_1,
+                    &config.keypad.pad_3_2,
+                    &config.keypad.pad_3_3,
+                    &config.keypad.pad_3_4,
+                ]
+                .into_iter()
+                .map(|pad: &PadConfig| KeyState::from(pad))
+                .collect()),
+                Row([
+                    &config.keypad.pad_4_0,
+                    &config.keypad.pad_4_1,
+                    &config.keypad.pad_4_2,
+                    &config.keypad.pad_4_3,
+                    &config.keypad.pad_4_4,
+                ]
+                .into_iter()
+                .map(|pad: &PadConfig| KeyState::from(pad))
+                .collect()),
             ],
         }
     }
@@ -147,15 +164,25 @@ struct KeyState {
     pressed: bool,
 }
 
-impl KeyState {
-    fn new(color_released: [u8; 3], color_pressed: [u8; 3]) -> Self {
+impl From<&PadConfig> for KeyState {
+    fn from(config: &PadConfig) -> Self {
         Self {
-            color_pressed: crate::util::Rgb::from(color_pressed),
-            color_released: crate::util::Rgb::from(color_released),
+            color_pressed: crate::util::Rgb::from([
+                config.pressed[0],
+                config.pressed[1],
+                config.pressed[2],
+            ]),
+            color_released: crate::util::Rgb::from([
+                config.released[0],
+                config.released[1],
+                config.released[2],
+            ]),
             pressed: false,
         }
     }
+}
 
+impl KeyState {
     fn pressed(&mut self) {
         self.pressed = true;
     }
