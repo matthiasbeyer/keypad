@@ -6,104 +6,157 @@ mqtt_subscribe_prefix = "mx-blue"
 [keypad.pad_0_0]
 released = [0, 50, 0]
 pressed = [50, 0, 0]
+on_release = []
+[[keypad.pad_0_0.on_press]]
+[keypad.pad_0_0.on_press.Publish]
+topic = "foo"
+payload = "bar"
 
 [keypad.pad_0_1]
 released = [0, 50, 0]
 pressed = [50, 0, 0]
+on_press = []
+on_release = []
 
 [keypad.pad_0_2]
 released = [0, 50, 0]
 pressed = [50, 0, 0]
+on_press = []
+on_release = []
 
 [keypad.pad_0_3]
 released = [0, 50, 0]
 pressed = [50, 0, 0]
+on_press = []
+on_release = []
 
 [keypad.pad_0_4]
 released = [0, 50, 0]
 pressed = [50, 0, 0]
+on_press = []
+on_release = []
 
 
 [keypad.pad_1_0]
 released = [0, 50, 0]
 pressed = [50, 0, 0]
+on_press = []
+on_release = []
 
 [keypad.pad_1_1]
 released = [0, 50, 0]
 pressed = [50, 0, 0]
+on_press = []
+on_release = []
 
 [keypad.pad_1_2]
 released = [0, 50, 0]
 pressed = [50, 0, 0]
+on_press = []
+on_release = []
 
 [keypad.pad_1_3]
 released = [0, 50, 0]
 pressed = [50, 0, 0]
+on_press = []
+on_release = []
 
 [keypad.pad_1_4]
 released = [0, 50, 0]
 pressed = [50, 0, 0]
+on_press = []
+on_release = []
 
 
 [keypad.pad_2_0]
 released = [0, 50, 0]
 pressed = [50, 0, 0]
+on_press = []
+on_release = []
 
 [keypad.pad_2_1]
 released = [0, 50, 0]
 pressed = [50, 0, 0]
+on_press = []
+on_release = []
 
 [keypad.pad_2_2]
 released = [0, 50, 0]
 pressed = [50, 0, 0]
+on_press = []
+on_release = []
 
 [keypad.pad_2_3]
 released = [0, 50, 0]
 pressed = [50, 0, 0]
+on_press = []
+on_release = []
 
 [keypad.pad_2_4]
 released = [0, 50, 0]
 pressed = [50, 0, 0]
+on_press = []
+on_release = []
 
 
 [keypad.pad_3_0]
 released = [0, 50, 0]
 pressed = [50, 0, 0]
+on_press = []
+on_release = []
 
 [keypad.pad_3_1]
 released = [0, 50, 0]
 pressed = [50, 0, 0]
+on_press = []
+on_release = []
 
 [keypad.pad_3_2]
 released = [0, 50, 0]
 pressed = [50, 0, 0]
+on_press = []
+on_release = []
 
 [keypad.pad_3_3]
 released = [0, 50, 0]
 pressed = [50, 0, 0]
+on_press = []
+on_release = []
 
 [keypad.pad_3_4]
 released = [0, 50, 0]
 pressed = [50, 0, 0]
+on_press = []
+on_release = []
 
 
 [keypad.pad_4_0]
 released = [0, 50, 0]
 pressed = [50, 0, 0]
+on_press = []
+on_release = []
 
 [keypad.pad_4_1]
 released = [0, 50, 0]
 pressed = [50, 0, 0]
+on_press = []
+on_release = []
 
 [keypad.pad_4_2]
 released = [0, 50, 0]
 pressed = [50, 0, 0]
+on_press = []
+on_release = []
 
 [keypad.pad_4_3]
 released = [0, 50, 0]
 pressed = [50, 0, 0]
+on_press = []
+on_release = []
 
 [keypad.pad_4_4]
 released = [0, 50, 0]
 pressed = [50, 0, 0]
+on_press = []
+on_release = []
 
