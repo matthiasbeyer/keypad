@@ -39,29 +39,18 @@
           }
         );
         craneLib = (crane.mkLib pkgs).overrideToolchain rustTarget;
-        unstableCraneLib = (crane.mkLib pkgs).overrideToolchain unstableRustTarget;
 
         rustfmt' = pkgs.writeShellScriptBin "rustfmt" ''
           exec "${unstableRustTarget}/bin/rustfmt" "$@"
         '';
 
         defs = pkgs.callPackage ./nix { inherit craneLib; };
-      in
-      rec {
+      in {
         checks = { } // defs.packages // defs.checks;
         packages = { } // defs.packages;
 
-        devShells.default = devShells.cloudmqtt;
 
-        devShells.python = pkgs.mkShellNoCC {
-          packages = [
-            (pkgs.python312.withPackages (ps: [
-              ps.paho-mqtt
-            ]))
-          ];
-        };
-
-        devShells.cloudmqtt = pkgs.mkShell {
+        devShells.default = pkgs.mkShell {
           buildInputs = [ ];
 
           nativeBuildInputs = [
