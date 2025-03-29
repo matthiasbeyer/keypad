@@ -49,6 +49,10 @@
         checks = { } // defs.packages // defs.checks;
         packages = { } // defs.packages;
 
+        apps.default = flake-utils.mkApp {
+          name = "keypad";
+          drv = defs.packages.keypad;
+        };
 
         devShells.default = pkgs.mkShell {
           buildInputs = [ ];
