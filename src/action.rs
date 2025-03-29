@@ -58,3 +58,14 @@ impl Action {
         }
     }
 }
+
+#[derive(Debug, serde::Deserialize)]
+pub(crate) struct ControlPacket {
+    pub(crate) actions: Vec<ControlAction>,
+}
+
+#[derive(Debug, serde::Deserialize)]
+pub(crate) enum ControlAction {
+    ToggleBlinking,
+    ToggleBlinkingAlternativeColor,
+}

@@ -2,6 +2,7 @@ mqtt_broker_addr = "172.31.65.64"
 mqtt_broker_port = 1883
 mqtt_client_id = "keypad-util"
 mqtt_subscribe_prefix = "mx-blue"
+mqtt_control_prefix = "mx-blue-control"
 
 interval_duration = "1s"
 

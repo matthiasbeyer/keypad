@@ -6,6 +6,7 @@ pub struct Config {
     pub mqtt_broker_port: u16,
     // pub mqtt_client_id: String, // TODO Unused because cloudmqtt does not yet have the interface
     pub mqtt_subscribe_prefix: String,
+    pub mqtt_control_prefix: String,
 
     /// Set a duration for the interval
     ///

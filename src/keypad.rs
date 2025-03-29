@@ -134,6 +134,18 @@ impl KeypadState {
             other => tracing::warn!(index = other, "Out of index"),
         }
     }
+
+    pub fn run_ctrl_action_on_key(&mut self, index: u8, action: crate::action::ControlAction) {
+        tracing::debug!(?index, "Running control action");
+        match index {
+            0..=4 => self.rows[0].run_ctrl_action_on_key(index % 5, action),
+            5..=9 => self.rows[1].run_ctrl_action_on_key(index % 5, action),
+            15..=19 => self.rows[3].run_ctrl_action_on_key(index % 5, action),
+            10..=14 => self.rows[2].run_ctrl_action_on_key(index % 5, action),
+            20..=24 => self.rows[4].run_ctrl_action_on_key(index % 5, action),
+            other => tracing::warn!(index = other, "Out of index"),
+        }
+    }
 }
 
 #[derive(Clone, Debug)]
@@ -151,6 +163,14 @@ impl Row {
     pub async fn released(&mut self, index: u8, mqtt: &CloudmqttClient) {
         if index < 5 {
             self.0[index as usize].released(mqtt).await
+        } else {
+            tracing::warn!(?index, "Row index out of range");
+        }
+    }
+
+    fn run_ctrl_action_on_key(&mut self, index: u8, action: crate::action::ControlAction) {
+        if index < 5 {
+            self.0[index as usize].run_ctrl_action_on_key(action)
         } else {
             tracing::warn!(?index, "Row index out of range");
         }
@@ -273,6 +293,20 @@ impl KeyState {
             BlinkState::Off => {
                 self.blink_state = BlinkState::On;
                 self.color_released
+            }
+        }
+    }
+
+    fn run_ctrl_action_on_key(&mut self, action: crate::action::ControlAction) {
+        match action {
+            crate::action::ControlAction::ToggleBlinking => {
+                tracing::trace!(blinking = ?!self.blinking, "Set blinking");
+                self.blinking = !self.blinking;
+            }
+            crate::action::ControlAction::ToggleBlinkingAlternativeColor => {
+                tracing::trace!(blinking = ?!self.blinking, alternative_color = ?self.blinking_alternative_color, "Set blinking with alternative color");
+                self.blinking = !self.blinking;
+                self.blinking_alternative_color = !self.blinking_alternative_color;
             }
         }
     }
