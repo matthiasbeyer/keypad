@@ -73,6 +73,7 @@ pub struct KeypadConfig {
 }
 
 #[derive(Debug, serde::Deserialize)]
+#[cfg_attr(test, derive(PartialEq, Eq, serde::Serialize))]
 pub struct PadConfig {
     pub released: [u8; 3],
     pub pressed: [u8; 3],
@@ -81,19 +82,76 @@ pub struct PadConfig {
 }
 
 #[derive(Clone, Debug, serde::Deserialize)]
+#[cfg_attr(test, derive(PartialEq, Eq, serde::Serialize))]
 pub enum OnPressAction {
     ToggleBlinking,
 
-    Publish {
-        topic: String,
-        payload: String,
-    }
+    Publish { topic: String, payload: String },
 }
 
 #[derive(Clone, Debug, serde::Deserialize)]
+#[cfg_attr(test, derive(PartialEq, Eq, serde::Serialize))]
 pub enum OnReleaseAction {
-    Publish {
-        topic: String,
-        payload: String,
+    Publish { topic: String, payload: String },
+}
+
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn test_pad_config_toggle_blinking() {
+        let config_str = r#"
+        released = [0,0,0]
+        pressed = [0,0,0]
+        on_press = ["ToggleBlinking"]
+        on_release = []
+        "#;
+        let config: crate::config::PadConfig = toml::from_str(config_str).unwrap();
+
+        assert_eq!(
+            config,
+            crate::config::PadConfig {
+                released: [0, 0, 0],
+                pressed: [0, 0, 0],
+                on_press: vec![crate::config::OnPressAction::ToggleBlinking],
+                on_release: vec![]
+            }
+        );
+    }
+
+    #[test]
+    fn test_pad_config_publish() {
+        let config_str = r#"
+        released = [0,0,0]
+        pressed = [0,0,0]
+        on_release = []
+        [[on_press]]
+        [on_press.Publish]
+        topic = "foo"
+        payload = "bar"
+        "#;
+
+        let expected = crate::config::PadConfig {
+            released: [0, 0, 0],
+            pressed: [0, 0, 0],
+            on_press: vec![crate::config::OnPressAction::Publish {
+                topic: String::from("foo"),
+                payload: String::from("bar"),
+            }],
+            on_release: vec![],
+        };
+
+        let config: crate::config::PadConfig = toml::from_str(config_str).unwrap_or_else(|_| {
+            panic!(
+                "Expected something that looks like {}",
+                toml::to_string(&expected).unwrap()
+            )
+        });
+
+        assert_eq!(
+            config,
+            expected,
+            "Expected: {}",
+            toml::to_string(&expected).unwrap(),
+        );
     }
 }
