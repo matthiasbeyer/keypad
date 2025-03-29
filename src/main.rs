@@ -70,6 +70,7 @@ async fn main() -> miette::Result<()> {
             }
 
             _tick = interval.tick() => {
+                tracing::info!("Publishing key state");
                 key_pad_state.publish(&mqtt, &config).await
             },
 
