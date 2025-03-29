@@ -83,6 +83,7 @@ pub struct KeypadConfig {
 pub struct PadConfig {
     pub released: [u8; 3],
     pub pressed: [u8; 3],
+    pub alternative: [u8; 3],
     pub on_press: Vec<OnPressAction>,
     pub on_release: Vec<OnReleaseAction>,
 }
@@ -91,6 +92,7 @@ pub struct PadConfig {
 #[cfg_attr(test, derive(PartialEq, Eq, serde::Serialize))]
 pub enum OnPressAction {
     ToggleBlinking,
+    ToggleBlinkingAlternativeColor,
 
     Publish { topic: String, payload: String },
 }
@@ -108,6 +110,7 @@ mod tests {
         let config_str = r#"
         released = [0,0,0]
         pressed = [0,0,0]
+        alternative = [0,0,0]
         on_press = ["ToggleBlinking"]
         on_release = []
         "#;
@@ -118,6 +121,7 @@ mod tests {
             crate::config::PadConfig {
                 released: [0, 0, 0],
                 pressed: [0, 0, 0],
+                alternative: [0, 0, 0],
                 on_press: vec![crate::config::OnPressAction::ToggleBlinking],
                 on_release: vec![]
             }
@@ -129,6 +133,7 @@ mod tests {
         let config_str = r#"
         released = [0,0,0]
         pressed = [0,0,0]
+        alternative = [0,0,0]
         on_release = []
         [[on_press]]
         [on_press.Publish]
@@ -139,6 +144,7 @@ mod tests {
         let expected = crate::config::PadConfig {
             released: [0, 0, 0],
             pressed: [0, 0, 0],
+            alternative: [0, 0, 0],
             on_press: vec![crate::config::OnPressAction::Publish {
                 topic: String::from("foo"),
                 payload: String::from("bar"),
