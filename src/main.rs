@@ -8,6 +8,7 @@ use mqtt_format::v5::packets::publish::MPublish;
 use tracing_subscriber::Layer;
 use tracing_subscriber::layer::SubscriberExt;
 
+mod action;
 mod cli;
 mod config;
 mod keypad;
@@ -51,29 +52,46 @@ async fn main() -> miette::Result<()> {
     let mut key_pad_state = crate::keypad::KeypadState::from_config(&config);
     key_pad_state.publish(&mqtt, &config).await;
 
-    while let Some(event) = events.next().await {
-        tracing::info!("Received event");
-        let MqttPacket::Publish(MPublish { payload, .. }) = event.get_packet() else {
-            tracing::debug!("Ignoring non-publish message");
-            continue;
-        };
+    let mut interval = tokio::time::interval(config.interval_duration.unwrap_or(cli.interval));
 
-        let num = match std::str::from_utf8(payload).map(f32::from_str) {
-            Ok(Ok(p)) => p,
-            Err(error) => {
-                tracing::warn!(?error, "Failed to parse payload");
-                continue;
+    loop {
+        tokio::select! {
+            _ = tokio::signal::ctrl_c() => {
+                tracing::warn!("ctrl-c received, cancelling application.");
+                break
             }
-            Ok(Err(error)) => {
-                tracing::warn!(?error, "Failed to parse payload");
-                continue;
-            }
-        };
 
-        if num.is_sign_negative() {
-            key_pad_state.released(num.abs() as u8);
-        } else {
-            key_pad_state.pressed(num.abs() as u8);
+            _tick = interval.tick() => {
+                key_pad_state.publish(&mqtt, &config).await
+            },
+
+            next_event = events.next() => {
+                if let Some(event) = next_event {
+                    tracing::info!("Received event");
+                    let MqttPacket::Publish(MPublish { payload, .. }) = event.get_packet() else {
+                        tracing::debug!("Ignoring non-publish message");
+                        continue;
+                    };
+
+                    let num = match std::str::from_utf8(payload).map(f32::from_str) {
+                        Ok(Ok(p)) => p,
+                        Err(error) => {
+                            tracing::warn!(?error, "Failed to parse payload");
+                            continue;
+                        }
+                        Ok(Err(error)) => {
+                            tracing::warn!(?error, "Failed to parse payload");
+                            continue;
+                        }
+                    };
+
+                    if num.is_sign_negative() {
+                        key_pad_state.released(num.abs() as u8, &mqtt).await;
+                    } else {
+                        key_pad_state.pressed(num.abs() as u8, &mqtt).await;
+                    }
+                }
+            }
         }
     }
 
