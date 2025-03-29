@@ -5,6 +5,11 @@ pub struct Cli {
     #[clap(short, long)]
     pub logging: Option<Level>,
 
+    /// Duration for intervals. For example for blinking
+    #[clap(long)]
+    #[clap(value_parser = humantime::parse_duration, default_value = "1s")]
+    pub interval: std::time::Duration,
+
     /// Optional file to log to
     #[clap(long = "config")]
     pub config_path: Option<camino::Utf8PathBuf>,

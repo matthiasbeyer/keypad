@@ -3,6 +3,8 @@ mqtt_broker_port = 1883
 mqtt_client_id = "keypad-util"
 mqtt_subscribe_prefix = "mx-blue"
 
+interval_duration = "1s"
+
 [keypad.pad_0_0]
 released = [0, 50, 0]
 pressed = [50, 0, 0]
@@ -15,7 +17,7 @@ payload = "bar"
 [keypad.pad_0_1]
 released = [0, 50, 0]
 pressed = [50, 0, 0]
-on_press = []
+on_press = ["ToggleBlinking"]
 on_release = []
 
 [keypad.pad_0_2]

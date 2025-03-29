@@ -7,6 +7,12 @@ pub struct Config {
     // pub mqtt_client_id: String, // TODO Unused because cloudmqtt does not yet have the interface
     pub mqtt_subscribe_prefix: String,
 
+    /// Set a duration for the interval
+    ///
+    /// Used for blinking, for example
+    #[serde(with = "humantime_serde::option")]
+    pub interval_duration: Option<std::time::Duration>,
+
     pub keypad: KeypadConfig,
 }
 

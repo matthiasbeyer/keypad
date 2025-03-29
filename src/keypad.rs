@@ -223,11 +223,13 @@ impl KeyState {
     }
 
     pub(crate) fn toggle_blinking(&mut self) {
+        tracing::trace!(blinking = ?!self.blinking, "Set blinking");
         self.blinking = !self.blinking;
     }
 
     fn color_pressed(&mut self) -> crate::util::Rgb {
-        if self.blinking {
+        if self.blinking && self.pressed {
+            tracing::trace!(blinking = self.blinking, "Color::Pressed");
             self.color_blinking()
         } else {
             self.color_pressed
@@ -235,7 +237,8 @@ impl KeyState {
     }
 
     fn color_released(&mut self) -> crate::util::Rgb {
-        if self.blinking {
+        if self.blinking && !self.pressed {
+            tracing::trace!(blinking = self.blinking, "Color::Released");
             self.color_blinking()
         } else {
             self.color_released
@@ -243,6 +246,7 @@ impl KeyState {
     }
 
     fn color_blinking(&mut self) -> crate::util::Rgb {
+        tracing::trace!(blink_state = ?self.blink_state);
         match self.blink_state {
             BlinkState::On => {
                 self.blink_state = BlinkState::Off;

@@ -35,12 +35,14 @@ impl Action {
     ) -> Result<(), miette::Error> {
         match self {
             Action::ToggleBlinking => {
+                tracing::info!("Action: Toggle blink");
                 key_state.toggle_blinking();
                 Ok(())
             }
 
             Action::PublishMqtt { topic, payload } => {
-                mqtt_client.publish(topic, payload).await;
+                tracing::info!(?topic, ?payload, "Action: Publishing");
+                mqtt_client.publish(payload, topic).await;
                 Ok(())
             }
         }
