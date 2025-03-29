@@ -161,8 +161,10 @@ impl Row {
 pub(crate) struct KeyState {
     color_pressed: crate::util::Rgb,
     color_released: crate::util::Rgb,
+    color_alternative: crate::util::Rgb,
     pressed: bool,
     blinking: bool,
+    blinking_alternative_color: bool,
     blink_state: BlinkState,
 
     on_press: Vec<crate::action::Action>,
@@ -182,8 +184,14 @@ impl From<&PadConfig> for KeyState {
                 config.released[1],
                 config.released[2],
             ]),
+            color_alternative: crate::util::Rgb::from([
+                config.alternative[0],
+                config.alternative[1],
+                config.alternative[2],
+            ]),
             pressed: false,
             blinking: false,
+            blinking_alternative_color: false,
             blink_state: BlinkState::Off,
 
             on_press: config
@@ -227,6 +235,12 @@ impl KeyState {
         self.blinking = !self.blinking;
     }
 
+    pub(crate) fn toggle_blinking_alternative_color(&mut self) {
+        tracing::trace!(blinking = ?!self.blinking, alternative_color = ?self.blinking_alternative_color, "Set blinking with alternative color");
+        self.blinking = !self.blinking;
+        self.blinking_alternative_color = !self.blinking_alternative_color;
+    }
+
     fn color_pressed(&mut self) -> crate::util::Rgb {
         if self.blinking && self.pressed {
             tracing::trace!(blinking = self.blinking, "Color::Pressed");
@@ -250,7 +264,11 @@ impl KeyState {
         match self.blink_state {
             BlinkState::On => {
                 self.blink_state = BlinkState::Off;
-                self.color_pressed
+                if self.blinking_alternative_color {
+                    self.color_alternative
+                } else {
+                    self.color_pressed
+                }
             }
             BlinkState::Off => {
                 self.blink_state = BlinkState::On;

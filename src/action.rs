@@ -1,6 +1,7 @@
 #[derive(Clone, Debug)]
 pub enum Action {
     ToggleBlinking,
+    ToggleBlinkingAlternativeColor,
     PublishMqtt { topic: String, payload: String },
 }
 
@@ -8,6 +9,9 @@ impl From<&crate::config::OnPressAction> for Action {
     fn from(value: &crate::config::OnPressAction) -> Self {
         match value {
             crate::config::OnPressAction::ToggleBlinking => Action::ToggleBlinking,
+            crate::config::OnPressAction::ToggleBlinkingAlternativeColor => {
+                Action::ToggleBlinkingAlternativeColor
+            }
             crate::config::OnPressAction::Publish { topic, payload } => Action::PublishMqtt {
                 topic: topic.to_string(),
                 payload: payload.to_string(),
@@ -37,6 +41,12 @@ impl Action {
             Action::ToggleBlinking => {
                 tracing::info!("Action: Toggle blink");
                 key_state.toggle_blinking();
+                Ok(())
+            }
+
+            Action::ToggleBlinkingAlternativeColor => {
+                tracing::info!("Action: Toggle blink alternative color");
+                key_state.toggle_blinking_alternative_color();
                 Ok(())
             }
 
