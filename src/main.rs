@@ -54,6 +54,14 @@ async fn main() -> miette::Result<()> {
 
     let mut interval = tokio::time::interval(config.interval_duration.unwrap_or(cli.interval));
 
+    let mut key_subscriptions = (0..=24)
+        .fold(mqtt.subscription_builder(), |builder, i| {
+            let topic = format!("{}/key/{i}", config.mqtt_control_prefix);
+            builder.with_subscription(topic)
+        })
+        .build()
+        .await;
+
     loop {
         tokio::select! {
             _ = tokio::signal::ctrl_c() => {
@@ -63,6 +71,45 @@ async fn main() -> miette::Result<()> {
 
             _tick = interval.tick() => {
                 key_pad_state.publish(&mqtt, &config).await
+            },
+
+            packet = key_subscriptions.next() => {
+                let Some(packet) = packet else {
+                    tracing::warn!("control subscription stream seems to have closed");
+                    continue
+                };
+
+                let MqttPacket::Publish(publish) = packet.get_packet() else {
+                    tracing::debug!(?packet, "Ignoring non-publish packet");
+                    continue
+                };
+
+                tracing::info!(?publish, "Received control packet");
+                let Some(target_key) = publish.topic_name.split('/').nth(2) else {
+                    tracing::warn!(topic = publish.topic_name, "No target key found in topic name");
+                    continue
+                };
+
+                let target_key = match target_key.parse::<u8>() {
+                    Ok(k) => k,
+                    Err(error) => {
+                        tracing::warn!(?error, "Could not parse target key as number");
+                        continue
+                    }
+                };
+                tracing::debug!(?target_key, "Found target key");
+
+                let control_actions: action::ControlPacket = match serde_json::from_slice(publish.payload) {
+                    Ok(a) => a,
+                    Err(error) => {
+                        tracing::warn!(?error, "Failed to parse control action");
+                        continue
+                    }
+                };
+
+                for action in control_actions.actions.into_iter() {
+                    key_pad_state.run_ctrl_action_on_key(target_key, action);
+                }
             },
 
             next_event = events.next() => {
