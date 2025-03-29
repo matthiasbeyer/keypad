@@ -70,6 +70,7 @@ async fn main() -> miette::Result<()> {
             }
 
             _tick = interval.tick() => {
+                tracing::info!("Publishing key state");
                 key_pad_state.publish(&mqtt, &config).await
             },
 
@@ -107,7 +108,9 @@ async fn main() -> miette::Result<()> {
                     }
                 };
 
+                tracing::info!(n = control_actions.actions.len(), "Received control actions");
                 for action in control_actions.actions.into_iter() {
+                    tracing::info!(?action, "Applying control action");
                     key_pad_state.run_ctrl_action_on_key(target_key, action);
                 }
             },
