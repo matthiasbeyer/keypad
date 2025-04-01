@@ -221,12 +221,12 @@ checksum = "f46ad14479a25103f283c0f10005961cf086d8dc42205bb44c46ac563475dca6"
 [[package]]
 name = "cloudmqtt"
 version = "0.5.0"
-source = "git+https://github.com/TheNeikos/cloudmqtt?branch=main#d0be9204c7c2ea21aa1aa4f242e84bfac4c64d69"
+source = "git+https://github.com/TheNeikos/cloudmqtt?branch=main#8c602f4da8c1ac5ac8d328f72d377695cfa91484"
 dependencies = [
  "cloudmqtt-core",
+ "cloudmqtt-workspace-hack",
  "dashmap",
  "futures",
- "hakari",
  "mqtt-format",
  "thiserror 2.0.12",
  "tokio",
@@ -239,13 +239,19 @@ dependencies = [
 [[package]]
 name = "cloudmqtt-core"
 version = "0.5.0"
-source = "git+https://github.com/TheNeikos/cloudmqtt?branch=main#d0be9204c7c2ea21aa1aa4f242e84bfac4c64d69"
+source = "git+https://github.com/TheNeikos/cloudmqtt?branch=main#8c602f4da8c1ac5ac8d328f72d377695cfa91484"
 dependencies = [
- "hakari",
+ "cloudmqtt-workspace-hack",
  "mqtt-format",
  "rustc-hash",
  "tracing",
 ]
+
+[[package]]
+name = "cloudmqtt-workspace-hack"
+version = "0.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7a10dfe7dd2b28a1e7781376a94d5cfdb3fce20c3cae147e19bcd597d609932b"
 
 [[package]]
 name = "colorchoice"
@@ -415,24 +421,6 @@ name = "gimli"
 version = "0.31.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "07e28edb80900c19c28f1072f2e8aeca7fa06b23cd4169cefe1af5aa3260783f"
-
-[[package]]
-name = "hakari"
-version = "0.1.0"
-source = "git+https://github.com/TheNeikos/cloudmqtt?branch=main#d0be9204c7c2ea21aa1aa4f242e84bfac4c64d69"
-dependencies = [
- "futures-core",
- "futures-sink",
- "num_enum",
- "num_enum_derive",
- "stable_deref_trait",
- "syn",
- "tokio",
- "tracing-core",
- "winnow",
- "yoke",
- "zerofrom",
-]
 
 [[package]]
 name = "hashbrown"
@@ -666,12 +654,12 @@ dependencies = [
 [[package]]
 name = "mqtt-format"
 version = "0.5.0"
-source = "git+https://github.com/TheNeikos/cloudmqtt?branch=main#d0be9204c7c2ea21aa1aa4f242e84bfac4c64d69"
+source = "git+https://github.com/TheNeikos/cloudmqtt?branch=main#8c602f4da8c1ac5ac8d328f72d377695cfa91484"
 dependencies = [
  "bytemuck",
+ "cloudmqtt-workspace-hack",
  "derive_more",
  "futures",
- "hakari",
  "nom",
  "nom-supreme",
  "num_enum",
