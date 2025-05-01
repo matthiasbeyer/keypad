@@ -16,7 +16,7 @@ hex = "0.4"
 human-panic = "2.0.2"
 humantime = "2.2.0"
 humantime-serde = "1.1.1"
-miette = { version = "7.5", features = ["fancy"] }
+miette = { version = "7.6", features = ["fancy"] }
 mqtt-format = { git = "https://github.com/TheNeikos/cloudmqtt", branch = "main" }
 serde = { version = "1.0.163", features = ["derive"] }
 serde_json = "1.0.96"
