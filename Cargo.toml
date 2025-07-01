@@ -26,4 +26,4 @@ tokio-util = "0.7.15"
 toml = "0.8.23"
 tracing = { version = "0.1" }
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
-xdg = "2.5.2"
+xdg = "3.0.0"
