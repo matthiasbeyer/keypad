@@ -13,7 +13,7 @@ cloudmqtt = { git = "https://github.com/TheNeikos/cloudmqtt", branch = "main" }
 dashmap = "6.1"
 futures = "0.3.31"
 hex = "0.4"
-human-panic = "2.0.2"
+human-panic = "2.0.3"
 humantime = "2.2.0"
 humantime-serde = "1.1.1"
 miette = { version = "7.6", features = ["fancy"] }
