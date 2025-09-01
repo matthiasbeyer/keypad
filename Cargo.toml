@@ -19,7 +19,7 @@ humantime-serde = "1.1.1"
 miette = { version = "7.6", features = ["fancy"] }
 mqtt-format = { git = "https://github.com/TheNeikos/cloudmqtt", branch = "main" }
 serde = { version = "1.0.163", features = ["derive"] }
-serde_json = "1.0.142"
+serde_json = "1.0.143"
 thiserror = "2"
 tokio = { version = "1", features = ["net", "fs", "macros", "rt", "signal"] }
 tokio-util = "0.7.15"
