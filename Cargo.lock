@@ -129,18 +129,18 @@ dependencies = [
 
 [[package]]
 name = "bytemuck"
-version = "1.22.0"
+version = "1.23.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b6b1fc10dbac614ebc03540c9dbd60e83887fda27794998c6528f1782047d540"
+checksum = "3995eaeebcdf32f91f980d360f78732ddc061097ab4e39991ae7a6ace9194677"
 dependencies = [
  "bytemuck_derive",
 ]
 
 [[package]]
 name = "bytemuck_derive"
-version = "1.9.2"
+version = "1.10.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2ff22c2722516255d1823ce3cc4bc0b154dbc9364be5c905d6baa6eccbbc8774"
+checksum = "4f154e572231cb6ba2bd1176980827e3d5dc04cc183a75dea38109fbdd672d29"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -221,12 +221,13 @@ checksum = "f46ad14479a25103f283c0f10005961cf086d8dc42205bb44c46ac563475dca6"
 [[package]]
 name = "cloudmqtt"
 version = "0.5.0"
-source = "git+https://github.com/TheNeikos/cloudmqtt?branch=main#d0be9204c7c2ea21aa1aa4f242e84bfac4c64d69"
+source = "git+https://github.com/TheNeikos/cloudmqtt?branch=main#434a32f89fc64583496fe23e8747b6894b955b4a"
 dependencies = [
  "cloudmqtt-core",
+ "cloudmqtt-workspace-hack",
  "dashmap",
  "futures",
- "hakari",
+ "humantime",
  "mqtt-format",
  "thiserror",
  "tokio",
@@ -239,13 +240,19 @@ dependencies = [
 [[package]]
 name = "cloudmqtt-core"
 version = "0.5.0"
-source = "git+https://github.com/TheNeikos/cloudmqtt?branch=main#d0be9204c7c2ea21aa1aa4f242e84bfac4c64d69"
+source = "git+https://github.com/TheNeikos/cloudmqtt?branch=main#434a32f89fc64583496fe23e8747b6894b955b4a"
 dependencies = [
- "hakari",
+ "cloudmqtt-workspace-hack",
  "mqtt-format",
  "rustc-hash",
  "tracing",
 ]
+
+[[package]]
+name = "cloudmqtt-workspace-hack"
+version = "0.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7a10dfe7dd2b28a1e7781376a94d5cfdb3fce20c3cae147e19bcd597d609932b"
 
 [[package]]
 name = "colorchoice"
@@ -415,24 +422,6 @@ name = "gimli"
 version = "0.31.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "07e28edb80900c19c28f1072f2e8aeca7fa06b23cd4169cefe1af5aa3260783f"
-
-[[package]]
-name = "hakari"
-version = "0.1.0"
-source = "git+https://github.com/TheNeikos/cloudmqtt?branch=main#d0be9204c7c2ea21aa1aa4f242e84bfac4c64d69"
-dependencies = [
- "futures-core",
- "futures-sink",
- "num_enum",
- "num_enum_derive",
- "stable_deref_trait",
- "syn",
- "tokio",
- "tracing-core",
- "winnow",
- "yoke",
- "zerofrom",
-]
 
 [[package]]
 name = "hashbrown"
@@ -676,12 +665,12 @@ dependencies = [
 [[package]]
 name = "mqtt-format"
 version = "0.5.0"
-source = "git+https://github.com/TheNeikos/cloudmqtt?branch=main#d0be9204c7c2ea21aa1aa4f242e84bfac4c64d69"
+source = "git+https://github.com/TheNeikos/cloudmqtt?branch=main#434a32f89fc64583496fe23e8747b6894b955b4a"
 dependencies = [
  "bytemuck",
+ "cloudmqtt-workspace-hack",
  "derive_more",
  "futures",
- "hakari",
  "nom",
  "nom-supreme",
  "num_enum",
@@ -726,18 +715,19 @@ dependencies = [
 
 [[package]]
 name = "num_enum"
-version = "0.7.3"
+version = "0.7.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4e613fc340b2220f734a8595782c551f1250e969d87d3be1ae0579e8d4065179"
+checksum = "a973b4e44ce6cad84ce69d797acf9a044532e4184c4f267913d1b546a0727b7a"
 dependencies = [
  "num_enum_derive",
+ "rustversion",
 ]
 
 [[package]]
 name = "num_enum_derive"
-version = "0.7.3"
+version = "0.7.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "af1844ef2428cc3e1cb900be36181049ef3d3193c63e43026cfe202983b27a56"
+checksum = "77e878c846a8abae00dd069496dbe8751b16ac1c3d6bd2a7283a938e8228f90d"
 dependencies = [
  "proc-macro-crate",
  "proc-macro2",
@@ -924,6 +914,12 @@ dependencies = [
  "linux-raw-sys",
  "windows-sys 0.59.0",
 ]
+
+[[package]]
+name = "rustversion"
+version = "1.0.22"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b39cdef0fa800fc44525c84ccb54a029961a8215f9619753635a9c0d2538d46d"
 
 [[package]]
 name = "ryu"
