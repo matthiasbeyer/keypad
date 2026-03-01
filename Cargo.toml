@@ -11,7 +11,7 @@ clap = { version = "4.5.60", features = ["derive", "cargo"] }
 clap-verbosity-flag = "3.0.4"
 cloudmqtt = { git = "https://github.com/TheNeikos/cloudmqtt", branch = "main" }
 dashmap = "6.1"
-futures = "0.3.31"
+futures = "0.3.32"
 hex = "0.4"
 human-panic = "2.0.3"
 humantime = "2.3.0"
